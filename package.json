@@ -1,0 +1,23 @@
+{
+  "name": "grunt-local-googlefont",
+  "version": "0.1.0",
+  "description": "Download and use local Google fonts in your Grunt jobs",
+  "main": "index.js",
+  "keywords": [
+    "grunt", "googlefont"
+  ],
+  "author": "6Wunderkinder GmbH <web@6wunderkinder.com>",
+  "contributors": [
+    "Adam Renklint <adam@renklint.com>"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "cssparser": "^0.2.2",
+    "mkdirp": "^0.5.0",
+    "request": "^2.40.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:wunderlist/grunt-local-googlefont.git"
+  }
+}
