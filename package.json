@@ -1,6 +1,6 @@
 {
   "name": "grunt-local-googlefont",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Download and use local Google fonts in your Grunt jobs",
   "main": "tasks/index.js",
   "keywords": [

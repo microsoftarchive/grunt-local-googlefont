@@ -34,7 +34,7 @@ module.exports = function (grunt) {
           var url = getDownloadUrl(rule.declarations.src);
           var filename = options.fontDestination + '/' + getFilename(rule, key, url);
 
-          body = formatBody(body, url, filename);
+          body = formatBody(options, body, url, filename);
           downloadFont(url, filename, next);
         }
       }
@@ -51,7 +51,11 @@ module.exports = function (grunt) {
     return css.replace(/unicode-range\:(\s|\w|\d|\+|-|,)*;/g, '');
   }
 
-  function formatBody (body, url, filename) {
+  function formatBody (options, body, url, filename) {
+
+    if (options.fontBaseDir) {
+      filename = filename.replace(options.fontBaseDir + '/', '');
+    }
 
     body = body.replace(url, '\'' + filename + '\'');
 
@@ -72,9 +76,7 @@ module.exports = function (grunt) {
     var name = rules[0].declarations['font-family'];
 
     var destination = options.cssDestination;
-    // var destination = process.cwd() + '/' + options.cssDestination;
     mkdirp.sync(destination);
-
 
     destination += '/font_' + name.replace(/'/g, '').toLowerCase();
     destination += '_' + key + '.styl';
@@ -86,8 +88,6 @@ module.exports = function (grunt) {
   function downloadFont (source, destination, done) {
 
     grunt.log.write('Downloading ' + destination + '... ');
-
-    // destination = process.cwd() + '/' + destination;
 
     var parts = destination.split('/');
     parts.pop();
