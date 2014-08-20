@@ -17,7 +17,7 @@ module.exports = function (grunt) {
       }
     }, function (error, response, body) {
 
-      var json = parser.parse(body);
+      var json = parseCSS(body);
       var rules = json.rulelist.slice();
 
       function next () {
@@ -41,6 +41,11 @@ module.exports = function (grunt) {
 
       next();
     });
+  }
+
+  function parseCSS (data) {
+    data = data.replace(/unicode-range\:(\s|\w|\d|\+|-|,)*;/g, '');
+    return parser.parse(data);
   }
 
   function formatBody (body, url, filename) {
