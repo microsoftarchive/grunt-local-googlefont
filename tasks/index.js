@@ -44,8 +44,11 @@ module.exports = function (grunt) {
   }
 
   function parseCSS (data) {
-    data = data.replace(/unicode-range\:(\s|\w|\d|\+|-|,)*;/g, '');
-    return parser.parse(data);
+    return parser.parse(cleanCSS(data));
+  }
+
+  function cleanCSS (css) {
+    return css.replace(/unicode-range\:(\s|\w|\d|\+|-|,)*;/g, '');
   }
 
   function formatBody (body, url, filename) {
@@ -76,7 +79,7 @@ module.exports = function (grunt) {
     destination += '/font_' + name.replace(/'/g, '').toLowerCase();
     destination += '_' + key + '.styl';
 
-    grunt.file.write(destination, body);
+    grunt.file.write(destination, cleanCSS(body));
     done();
   }
 
