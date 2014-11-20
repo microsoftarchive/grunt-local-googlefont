@@ -83,7 +83,7 @@ module.exports = function (grunt) {
     mkdirp.sync(destination);
 
     destination += '/font_' + name.replace(/'/g, '').toLowerCase();
-    destination += '_' + key + '.styl';
+    destination += '_' + key + '.css';
 
     grunt.file.write(destination, cleanCSS(body));
     done();
