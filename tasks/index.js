@@ -146,9 +146,9 @@ module.exports = function (grunt) {
     return match;
   }
 
-  function getPublicUrl (family, sizes) {
+  function getPublicUrl (family, sizes, subsets) {
 
-    return 'http://fonts.googleapis.com/css?family=' + family + ':' + sizes.join(',');
+    return 'http://fonts.googleapis.com/css?family=' + family + ':' + sizes.join(',') + (subsets && subsets.length ? '&subset=' + subsets.join(',') : '');
   }
 
   var downloadFontsTask = function downloadFontsForUrl () {
@@ -163,7 +163,7 @@ module.exports = function (grunt) {
       grunt.fail.fatal('Invalid font size(s) declaration');
     }
 
-    var url = getPublicUrl(options.family, options.sizes);
+    var url = getPublicUrl(options.family, options.sizes, options.subsets);
 
     if (!options.userAgents) {
       options.userAgents = {
