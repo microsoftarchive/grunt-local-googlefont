@@ -33,10 +33,10 @@ module.exports = function (grunt) {
 
           var url = getDownloadUrl(rule.declarations.src);
           if (url) {
-            var filename = options.fontDestination + '/' + getFilename(rule, key, url);
+            var filename = getFilename(rule, key, url);
 
             body = formatBody(options, body, url, filename);
-            downloadFont(url, filename, next);
+            downloadFont(url, options.fontDestination + '/' + filename, next);
           } else {
             next();
           }
@@ -58,7 +58,7 @@ module.exports = function (grunt) {
   function formatBody (options, body, url, filename) {
 
     if (options.fontBaseDir) {
-      filename = filename.replace(options.fontBaseDir + '/', '');
+      filename = options.fontBaseDir + '/' + encodeURIComponent(filename);
     }
 
     body = body.replace(url, '\'' + filename + '\'');
