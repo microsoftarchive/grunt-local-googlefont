@@ -52,7 +52,7 @@ module.exports = function (grunt) {
   }
 
   function cleanCSS (css) {
-    return css.replace(/unicode-range\:(\s|\w|\d|\+|-|,)*;/g, '');
+    return css.replace(/unicode-range\:.*?;/g, '');
   }
 
   function formatBody (options, body, url, filename) {
