@@ -32,10 +32,14 @@ module.exports = function (grunt) {
         if (rule.type === 'fontface') {
 
           var url = getDownloadUrl(rule.declarations.src);
-          var filename = options.fontDestination + '/' + getFilename(rule, key, url);
+          if (url) {
+            var filename = options.fontDestination + '/' + getFilename(rule, key, url);
 
-          body = formatBody(options, body, url, filename);
-          downloadFont(url, filename, next);
+            body = formatBody(options, body, url, filename);
+            downloadFont(url, filename, next);
+          } else {
+            next();
+          }
         }
       }
 
