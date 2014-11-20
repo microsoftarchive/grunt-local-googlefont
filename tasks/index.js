@@ -98,17 +98,24 @@ module.exports = function (grunt) {
     var destFolder = parts.join('/');
     mkdirp.sync(destFolder);
 
-    var file = fs.createWriteStream(destination);
-    var remote = request(source);
+    fs.exists(destination, function(exists) {
+      if (exists) {
+        grunt.log.writeln('Already exists');
+        done();
+        return;
+      }
+      var file = fs.createWriteStream(destination);
+      var remote = request(source);
 
-    remote.on('data', function (chunk) {
-      file.write(chunk);
-    });
+      remote.on('data', function (chunk) {
+        file.write(chunk);
+      });
 
-    remote.on('end', function () {
-      grunt.log.ok();
-      file.end();
-      done();
+      remote.on('end', function () {
+        grunt.log.ok();
+        file.end();
+        done();
+      });
     });
   }
 
