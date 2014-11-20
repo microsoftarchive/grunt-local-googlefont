@@ -85,7 +85,7 @@ module.exports = function (grunt) {
     destination += '/font_' + name.replace(/'/g, '').toLowerCase();
     destination += '_' + key + '.css';
 
-    grunt.file.write(destination, cleanCSS(body));
+    grunt.file.write(destination, body);
     done();
   }
 
