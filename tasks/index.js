@@ -32,10 +32,14 @@ module.exports = function (grunt) {
         if (rule.type === 'fontface') {
 
           var url = getDownloadUrl(rule.declarations.src);
-          var filename = options.fontDestination + '/' + getFilename(rule, key, url);
+          if (url) {
+            var filename = getFilename(rule, key, url);
 
-          body = formatBody(options, body, url, filename);
-          downloadFont(url, filename, next);
+            body = formatBody(options, body, url, filename);
+            downloadFont(url, options.fontDestination + '/' + filename, next);
+          } else {
+            next();
+          }
         }
       }
 
@@ -48,27 +52,17 @@ module.exports = function (grunt) {
   }
 
   function cleanCSS (css) {
-    return css.replace(/unicode-range\:(\s|\w|\d|\+|-|,)*;/g, '');
+    return css.replace(/unicode-range\:.*?;/g, '');
   }
 
   function formatBody (options, body, url, filename) {
 
     if (options.fontBaseDir) {
-      filename = filename.replace(options.fontBaseDir + '/', '');
+      filename = options.fontBaseDir + '/' + encodeURIComponent(filename);
     }
 
     body = body.replace(url, '\'' + filename + '\'');
-
-    var included = [];
-    var parts = body.split(',');
-
-    parts.forEach(function (part) {
-      if (part.indexOf('woff2') < 0) {
-        included.push(part);
-      }
-    });
-
-    return included.join(',');
+    return body;
   }
 
   function writeStylesheet (options, key, body, rules, done) {
@@ -79,9 +73,9 @@ module.exports = function (grunt) {
     mkdirp.sync(destination);
 
     destination += '/font_' + name.replace(/'/g, '').toLowerCase();
-    destination += '_' + key + '.styl';
+    destination += '_' + key + '.css';
 
-    grunt.file.write(destination, cleanCSS(body));
+    grunt.file.write(destination, body);
     done();
   }
 
@@ -94,17 +88,24 @@ module.exports = function (grunt) {
     var destFolder = parts.join('/');
     mkdirp.sync(destFolder);
 
-    var file = fs.createWriteStream(destination);
-    var remote = request(source);
+    fs.exists(destination, function(exists) {
+      if (exists) {
+        grunt.log.writeln('Already exists');
+        done();
+        return;
+      }
+      var file = fs.createWriteStream(destination);
+      var remote = request(source);
 
-    remote.on('data', function (chunk) {
-      file.write(chunk);
-    });
+      remote.on('data', function (chunk) {
+        file.write(chunk);
+      });
 
-    remote.on('end', function () {
-      grunt.log.ok();
-      file.end();
-      done();
+      remote.on('end', function () {
+        grunt.log.ok();
+        file.end();
+        done();
+      });
     });
   }
 
@@ -129,15 +130,12 @@ module.exports = function (grunt) {
 
     if (!match) return '';
 
-    if (match.indexOf('woff2') > 0)
-      return getDownloadUrl(string.replace(match, ''));
-
     return match;
   }
 
-  function getPublicUrl (family, sizes) {
+  function getPublicUrl (family, sizes, subsets) {
 
-    return 'http://fonts.googleapis.com/css?family=' + family + ':' + sizes.join(',');
+    return 'http://fonts.googleapis.com/css?family=' + family + ':' + sizes.join(',') + (subsets && subsets.length ? '&subset=' + subsets.join(',') : '');
   }
 
   var downloadFontsTask = function downloadFontsForUrl () {
@@ -152,7 +150,7 @@ module.exports = function (grunt) {
       grunt.fail.fatal('Invalid font size(s) declaration');
     }
 
-    var url = getPublicUrl(options.family, options.sizes);
+    var url = getPublicUrl(options.family, options.sizes, options.subsets);
 
     if (!options.userAgents) {
       options.userAgents = {
