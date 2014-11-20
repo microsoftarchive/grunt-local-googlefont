@@ -62,17 +62,7 @@ module.exports = function (grunt) {
     }
 
     body = body.replace(url, '\'' + filename + '\'');
-
-    var included = [];
-    var parts = body.split(',');
-
-    parts.forEach(function (part) {
-      if (part.indexOf('woff2') < 0) {
-        included.push(part);
-      }
-    });
-
-    return included.join(',');
+    return body;
   }
 
   function writeStylesheet (options, key, body, rules, done) {
@@ -139,9 +129,6 @@ module.exports = function (grunt) {
     var match = matches && matches[1];
 
     if (!match) return '';
-
-    if (match.indexOf('woff2') > 0)
-      return getDownloadUrl(string.replace(match, ''));
 
     return match;
   }
