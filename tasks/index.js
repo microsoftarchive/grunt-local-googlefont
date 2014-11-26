@@ -23,14 +23,11 @@ module.exports = function (grunt) {
       function next () {
 
         if (!rules.length) {
-
           return writeStylesheet(options, key, body, json.rulelist, done);
         }
 
         var rule = rules.shift();
-
         if (rule.type === 'fontface') {
-
           var url = getDownloadUrl(rule.declarations.src);
           var filename = options.fontDestination + '/' + getFilename(rule, key, url);
 
@@ -135,9 +132,13 @@ module.exports = function (grunt) {
     return match;
   }
 
-  function getPublicUrl (family, sizes) {
+  function getPublicUrl (family, sizes, subsets) {
 
-    return 'http://fonts.googleapis.com/css?family=' + family + ':' + sizes.join(',');
+    var url = 'http://fonts.googleapis.com/css?family=' + family + ':' + sizes.join(',');
+    if (subsets) {
+      url += '&subset=' + subsets.join(',');
+    }
+    return url;
   }
 
   var downloadFontsTask = function downloadFontsForUrl () {
@@ -152,11 +153,11 @@ module.exports = function (grunt) {
       grunt.fail.fatal('Invalid font size(s) declaration');
     }
 
-    var url = getPublicUrl(options.family, options.sizes);
+    var url = getPublicUrl(options.family, options.sizes, options.subsets);
 
     if (!options.userAgents) {
       options.userAgents = {
-        'default': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1944.0 Safari/537.36"
+        'default': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1944.0 Safari/537.36"
       };
     }
 
