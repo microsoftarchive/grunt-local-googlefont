@@ -4,7 +4,9 @@
   "description": "Download and use local Google fonts in your Grunt jobs",
   "main": "tasks/index.js",
   "keywords": [
-    "grunt", "googlefont"
+    "grunt",
+    "gruntplugin",
+    "googlefont"
   ],
   "author": "6Wunderkinder GmbH <web@6wunderkinder.com>",
   "contributors": [
