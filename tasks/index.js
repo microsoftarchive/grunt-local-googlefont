@@ -112,7 +112,7 @@ module.exports = function (grunt) {
 
     ['font-family', 'font-style', 'font-weight'].forEach(function (name) {
 
-      filename += rule.declarations[name].replace(/'/g, '') + '_';
+      filename += rule.declarations[name].replace(/'/g, '').replace(/ /g, '_') + '_';
     });
 
     filename = filename + key + '.' + extension;
