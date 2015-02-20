@@ -75,7 +75,7 @@ module.exports = function (grunt) {
     var destination = options.cssDestination;
     mkdirp.sync(destination);
 
-    destination += '/font_' + name.replace(/'/g, '').toLowerCase();
+    destination += '/font_' + name.replace(/'/g, '').replace(/ /g, '_').toLowerCase();
     destination += '_' + key + '.styl';
 
     grunt.file.write(destination, cleanCSS(body));
