@@ -29,10 +29,10 @@ module.exports = function (grunt) {
         var rule = rules.shift();
         if (rule.type === 'fontface') {
           var url = getDownloadUrl(rule.declarations.src);
-          var filename = options.fontDestination + '/' + getFilename(rule, key, url);
+          var filename = getFilename(rule, key, url).replace(/ /g,'_');
 
-          body = formatBody(options, body, url, filename);
-          downloadFont(url, filename, next);
+          body = formatBody(options, body, url, ((options.fontDestinationCssPrefix)?options.fontDestinationCssPrefix:options.fontDestination) + '/' + filename);
+          downloadFont(url, options.fontDestination + '/' + filename, next);
         }
       }
 
@@ -75,8 +75,8 @@ module.exports = function (grunt) {
     var destination = options.cssDestination;
     mkdirp.sync(destination);
 
-    destination += '/font_' + name.replace(/'/g, '').toLowerCase();
-    destination += '_' + key + '.styl';
+    destination += '/font_' + name.replace(/'/g, '').replace(/ /g, '_').toLowerCase();
+    destination += '_' + key + '.' + options.styleSheetExtension;
 
     grunt.file.write(destination, cleanCSS(body));
     done();
