@@ -30,9 +30,10 @@ module.exports = function (grunt) {
         if (rule.type === 'fontface') {
           var url = getDownloadUrl(rule.declarations.src);
           var filename = getFilename(rule, key, url).replace(/ /g,'_');
+          var dest = options.fontDestination + '/' + filename;
 
-          body = formatBody(options, body, url, ((options.fontDestinationCssPrefix)?options.fontDestinationCssPrefix:options.fontDestination) + '/' + filename);
-          downloadFont(url, options.fontDestination + '/' + filename, next);
+          body = formatBody(options, body, url, ((options.fontDestinationCssPrefix)?(options.fontDestinationCssPrefix + '/' + filename):dest));
+          downloadFont(url, dest, next);
         }
       }
 
@@ -84,24 +85,33 @@ module.exports = function (grunt) {
 
   function downloadFont (source, destination, done) {
 
-    grunt.log.write('Downloading ' + destination + '... ');
+    grunt.log.write(' ' + destination + ': ');
 
     var parts = destination.split('/');
     parts.pop();
     var destFolder = parts.join('/');
     mkdirp.sync(destFolder);
 
-    var file = fs.createWriteStream(destination);
-    var remote = request(source);
+    fs.exists(destination,function(exists) {
+      if (exists) {
+        grunt.log.write('skipping ');
+        grunt.log.ok();
+        done();
+      } else {
+        grunt.log.write('downloading ');
+        var file = fs.createWriteStream(destination);
+        var remote = request(source);
 
-    remote.on('data', function (chunk) {
-      file.write(chunk);
-    });
+        remote.on('data', function (chunk) {
+          file.write(chunk);
+        });
 
-    remote.on('end', function () {
-      grunt.log.ok();
-      file.end();
-      done();
+        remote.on('end', function () {
+          grunt.log.ok();
+          file.end();
+          done();
+        });
+      }
     });
   }
 
