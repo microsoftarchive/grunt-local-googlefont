@@ -19,7 +19,9 @@ $ npm install --save grunt-local-googlefont
         300,400,700,900
       ],
       "cssDestination": "site/styles",
-      "fontDestination": "public/fonts"
+      "fontDestination": "public/fonts",
+      "styleSheetExtension" : "css",
+      "fontDestinationCssPrefix" : "fonts"
     }
   }
 }
